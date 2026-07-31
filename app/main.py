@@ -1,6 +1,8 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Header
 from pydantic import BaseModel, EmailStr, Field
 from app.auth import supabase
+
+
 
 app = FastAPI(title="Auth API", version="1.0.0")
 
@@ -37,3 +39,17 @@ def login(body: AuthBody):
         }
     except Exception:
         raise HTTPException(401, detail="Invalid login credentials")
+
+
+
+@app.get("/public/info")
+def public_info():
+    return {"message": "Welcome stranger! This info is public."}
+
+@app.get("/protected/profile")
+def protected_profile(authorization: str | None = Header(None)):
+    # Check that a token was presented in the Authorization header
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(401, detail="Access token required")
+    return {"message": "Token was presented (not verified yet)"}
+
