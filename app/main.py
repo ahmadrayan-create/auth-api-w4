@@ -1,8 +1,15 @@
 from fastapi import FastAPI, HTTPException, Depends
+from fastapi.security import HTTPBearer
 from pydantic import BaseModel, EmailStr, Field
 from app.auth import supabase, get_current_user
 
-app = FastAPI(title="Auth API", version="1.0.0")
+security_scheme = HTTPBearer()
+
+app = FastAPI(
+    title="Auth API", 
+    version="1.0.0",
+    swagger_ui_parameters={"persistAuthorization": True}
+)
 
 class AuthBody(BaseModel):
     email: EmailStr
