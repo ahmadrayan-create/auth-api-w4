@@ -45,3 +45,16 @@ def public_info():
 @app.get("/protected/profile")
 def protected_profile(user = Depends(get_current_user)):
     return {"message": "Authenticated successfully", "user": user}
+
+
+@app.get("/protected/dashboard")
+def dashboard(user = Depends(get_current_user)):
+    return {"message": f"Welcome to your dashboard, {user.email}"}
+
+@app.post("/auth/logout")
+def logout(user = Depends(get_current_user)):
+    try:
+        supabase.auth.sign_out()
+        return {"message": "Logged out successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
